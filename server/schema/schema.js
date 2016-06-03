@@ -182,13 +182,17 @@ var TeamType = new GraphQLObjectType({
   description: 'Football team',
   fields: () => ({
     id: globalIdField('Team'),
+    key: {
+      type: GraphQLString,
+      resolve: (team) => team.get('key')
+    },
     name: {
       type: GraphQLString,
       resolve: (team) => team.get('name')
     },
     badge: {
       type: GraphQLString,
-      resolve: (team) => `http://pads6.pa-sport.com/api/football/team/badge/${config.import_key}/${team.id}/200/200`
+      resolve: (team) => `http://pads6.pa-sport.com/api/football/team/badge/${config.import_key}/${team.key}/200/200`
     }
   }),
   interfaces: [nodeInterface]

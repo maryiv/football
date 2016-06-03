@@ -79,6 +79,7 @@ enum StageType {
 
 type Team implements Node {
   id: ID!
+  key: String
   name: String
   badge: String
 }

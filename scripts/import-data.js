@@ -40,7 +40,8 @@ async function importMatch(ClassType, attributes) {
             let team = await query.equalTo("name", value['teamName']).first();
             if (team == undefined) {
                 team = new Team();
-                team.set("teamName", value['teamName']);
+                team.set("key", value['@teamID']);
+                team.set("name", value['teamName']);
                 team.set("score", value['score']);
                 team.set("htScore", value['htScore']);
                 team = await team.save();

@@ -47,6 +47,8 @@ if (IS_DEVELOPMENT) {
     if (DASHBOARD_AUTH) {
         var [user, pass] = DASHBOARD_AUTH.split(':');
         users = [{user, pass}];
+    } else {
+        users = config.parse_users;
     }
     server.use(
         '/dashboard',

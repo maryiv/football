@@ -13,4 +13,9 @@ config.file_key_o = process.env.FILE_KEY_O || 'defaultFileKey';
 
 config.db_uri = process.env.DATABASE_URI || 'mongodb://localhost:27017/football';
 
+config.parse_users = [{
+    "user": "your-user",
+    "pass": "your-pass"
+}];
+
 module.exports = config;

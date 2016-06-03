@@ -1,0 +1,83 @@
+type Competition {
+  competitionID: ID!
+  seasonID: ID!
+  text: String
+}
+
+type Match implements Node {
+  id: ID!
+  startTime: Float
+  competition: Competition
+  stage: Stage
+  round: Round
+  leg: Int
+  liveMatch: Boolean
+  result: Boolean
+  previewAvailable: Boolean
+  reportAvailable: Boolean
+  lineupsAvailable: Boolean
+  matchStatus: MatchStatus
+  attendance: String
+  referee: Referee
+  venue: Venue
+  homeTeam: MatchTeam
+  awayTeam: MatchTeam
+}
+
+type MatchAction implements Node {
+  id: ID!
+  teamID: ID!
+  eventID: ID!
+  eventType: String
+  matchTime: String
+}
+
+enum MatchStatus {
+  FT
+}
+
+type MatchTeam {
+  teamID: ID!
+  teamName: String
+  score: Int
+  htScore: Int
+}
+
+interface Node {
+  id: ID!
+}
+
+type Query {
+  node(id: ID!): Node
+  schedule: [Match]
+}
+
+type Referee {
+  refereeID: ID!
+  text: String
+}
+
+type Round {
+  number: Int
+  text: String
+}
+
+type Stage {
+  number: Int
+  type: StageType
+}
+
+enum StageType {
+  League
+}
+
+type Team implements Node {
+  id: ID!
+  name: String
+  badge: String
+}
+
+type Venue {
+  venueID: ID!
+  text: String
+}

@@ -12,6 +12,7 @@ import ParseDashboard from 'parse-dashboard';
 
 const config = require('../conf/run');
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production';
+const DASHBOARD_AUTH = process.env.DASHBOARD_AUTH;
 
 Parse.initialize(config.app_id);
 Parse.serverURL = `http://localhost:${config.port}/parse`;
@@ -43,6 +44,10 @@ server.use(
 
 if (IS_DEVELOPMENT) {
     let users;
+    if (DASHBOARD_AUTH) {
+        var [user, pass] = DASHBOARD_AUTH.split(':');
+        users = [{user, pass}];
+    }
     server.use(
         '/dashboard',
         ParseDashboard({

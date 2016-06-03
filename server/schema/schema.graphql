@@ -4,7 +4,7 @@ enum BooleanType {
 }
 
 type Competition {
-  id: ID!
+  competitionID: ID!
   seasonID: ID!
   text: String
 }

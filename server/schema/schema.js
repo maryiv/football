@@ -160,7 +160,20 @@ var MatchTeamType = new GraphQLObjectType({
   name: 'MatchTeam',
   description: 'Info by team in match',
   fields: () => ({
-    venue
+    teamID: { type: new GraphQLNonNull(GraphQLID) },
+    teamName: {
+      type: GraphQLString,
+      resolve: (matchTeam) => new Parse.Query(Team).get(matchTeam.teamID, {
+        success: function(team) {
+          return team.name;
+        },
+        error: function(object, error) {
+          return '';
+        }
+      })
+    },
+    score: { type: GraphQLInt },
+    htScore: { type: GraphQLInt }
   })
 });
 

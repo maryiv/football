@@ -367,8 +367,8 @@
           "description": null,
           "fields": [
             {
-              "name": "id",
-              "description": "The ID of an object",
+              "name": "competitionID",
+              "description": null,
               "args": [],
               "type": {
                 "kind": "NON_NULL",

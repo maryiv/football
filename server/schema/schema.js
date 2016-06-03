@@ -64,8 +64,14 @@ var MatchType = new GraphQLObjectType({
   description: 'Football match',
   fields: () => ({
     id: globalIdField('Match'),
-    date: { type: GraphQLString },
-    time: { type: GraphQLString },
+    date: {
+      type: GraphQLString,
+      resolve: (match) => match.get('date')
+    },
+    time: {
+      type: GraphQLString,
+      resolve: (match) => match.get('time')
+    },
     competition: { type: CompetitionType },
     stage: { type: StageType },
     round: { type: RoundType },
@@ -76,7 +82,10 @@ var MatchType = new GraphQLObjectType({
     reportAvailable: { type: BooleanType },
     lineupsAvailable: { type: BooleanType },
     matchStatus: { type: MatchStatusType },
-    attendance: { type: GraphQLString },
+    attendance: {
+      type: GraphQLString,
+      resolve: (match) => match.get('attendance')
+    },
     referee: { type: RefereeType },
     venue: { type: VenueType },
     homeTeam: { type: MatchTeamType },
@@ -220,9 +229,11 @@ var AppQueryType = new GraphQLObjectType({
     node: nodeField,
     schedule: {
       type: new GraphQLList(MatchType),
+      args: {
+        date: { type: GraphQLString }
+      },
       description: 'Match schedule',
-      resolve: () => new Parse.Query(Match).find()
-      //resolve: () => new Parse.Query(Match).greaterThan('startTime', new Date().getTime()).ascending('startTime').find()
+      resolve: (_, args) => new Parse.Query(Match).equalTo("date", args.date).find()
     }
   })
 });

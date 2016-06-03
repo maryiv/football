@@ -32,11 +32,18 @@ async function importMatches(date) {
         headers: {'Content-Type': 'application/json'}
     });
     const { matches } = await response.json();
-    const ClassType = Parse.Object.extend('Match');
-    await new Parse.Query('MatchAction').each(record => record.destroy());
-    await new Parse.Query('Team').each(record => record.destroy());
-    await new Parse.Query(ClassType).each(record => record.destroy());
-    return Promise.all(matches.match.map(attrs => importMatch(ClassType, attrs)));
+    if (matches.errors) {
+        for (let key in matches.errors) {
+            console.error(matches.errors[key]);
+        }
+        return [];
+    } else {
+        const ClassType = Parse.Object.extend('Match');
+        await new Parse.Query('MatchAction').each(record => record.destroy());
+        await new Parse.Query('Team').each(record => record.destroy());
+        await new Parse.Query(ClassType).each(record => record.destroy());
+        return Promise.all(matches.match.map(attrs => importMatch(ClassType, attrs)));
+    }
 }
 
 async function importMatch(ClassType, attributes) {
@@ -94,10 +101,6 @@ async function importMatch(ClassType, attributes) {
                         "text": value['#text']
                     });
                     break;
-                case 'homeTeam':
-                    break;
-                case 'awayTeam':
-                    break;
                 default:
                     match.set(key, value);
             }
@@ -150,7 +153,10 @@ async function main() {
     console.log('Import data from today');
     let matches = await importMatches(today);
     let count = matches.length;
-    return 'Imported '+count+' matches';
+    if (count == 0) {
+        return 'Data were not imported.';
+    }
+    return 'Imported '+count+' matches.';
 }
 
 main().then(console.dir, console.error);

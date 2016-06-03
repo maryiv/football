@@ -24,6 +24,7 @@ async function importMatches(date) {
     });
     const { matches } = await response.json();
     const ClassType = Parse.Object.extend('Match');
+    await new Parse.Query('Team').each(record => record.destroy());
     await new Parse.Query(ClassType).each(record => record.destroy());
     return Promise.all(matches.match.map(attrs => importMatch(ClassType, attrs)));
 }
@@ -34,9 +35,18 @@ async function importMatch(ClassType, attributes) {
     for (let key in attributes) {
         let value = attributes[key];
         if (TEAM_FIELDS.has(key)) {
+            const Team = Parse.Object.extend('Team');
+            let query = new Parse.Query(Team);
+            let team = await query.equalTo("name", value['teamName']).first();
+            if (team == undefined) {
+                team = new Team();
+                team.set("teamName", value['teamName']);
+                team.set("score", value['score']);
+                team.set("htScore", value['htScore']);
+                team = await team.save();
+            }
             match.set(key, {
-                "teamID": value['@teamID'],
-                "teamName": value['teamName'],
+                "teamID": team.id,
                 "score": value['score'],
                 "htScore": value['htScore']
             });

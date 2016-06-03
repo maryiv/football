@@ -1,6 +1,7 @@
 var config = {};
 
 config.app_id = 'test-football-app-2016';
+config.app_name = 'Test-Football-App-2016';
 config.version = '0.0.1';
 
 config.host = process.env.HOST || 'localhost';

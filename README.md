@@ -67,6 +67,8 @@ We used React Native, Redux, Relay, GraphQL, and more.
 
   Parse Dashboard: [http://localhost:8080/dashboard](http://localhost:8080/dashboard)
   
+  <img src=".github/screenshot-dashboard.png" width="600">
+  
   You can check out their inquiries to:
   
   Graph*i*QL: [http://localhost:8080/graphql](http://localhost:8080/graphql)

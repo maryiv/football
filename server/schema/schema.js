@@ -206,7 +206,10 @@ var MatchActionType = new GraphQLObjectType({
     teamID: { type: new GraphQLNonNull(GraphQLID) },
     eventID: {type: new GraphQLNonNull(GraphQLID) },
     eventType: { type: GraphQLString },
-    matchTime: { type: GraphQLString }
+    matchTime: { type: GraphQLString },
+    eventTime: { type: GraphQLString },
+    normalTime: { type: GraphQLString },
+    addedTime: { type: GraphQLString }
   }),
   interfaces: [nodeInterface]
 });

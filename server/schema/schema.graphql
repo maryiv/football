@@ -36,6 +36,9 @@ type MatchAction implements Node {
   eventID: ID!
   eventType: String
   matchTime: String
+  eventTime: String
+  normalTime: String
+  addedTime: String
 }
 
 enum MatchStatus {

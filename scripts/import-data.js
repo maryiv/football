@@ -17,6 +17,15 @@ function convertToday(date) {
     return date;
 }
 
+async function importActions(matchID) {
+    const response = await fetch(`${api_uri}match/actions/${config.import_key}/${matchID}/json`, {
+        method: 'get',
+        headers: {'Content-Type': 'application/json'}
+    });
+    const { matchActions } = await response.json();
+    return matchActions.actions.action;
+}
+
 async function importMatches(date) {
     const response = await fetch(`${api_uri}competitions/matchDay/${config.import_key}/${date}/json`, {
         method: 'get',
@@ -24,6 +33,7 @@ async function importMatches(date) {
     });
     const { matches } = await response.json();
     const ClassType = Parse.Object.extend('Match');
+    await new Parse.Query('MatchAction').each(record => record.destroy());
     await new Parse.Query('Team').each(record => record.destroy());
     await new Parse.Query(ClassType).each(record => record.destroy());
     return Promise.all(matches.match.map(attrs => importMatch(ClassType, attrs)));
@@ -93,24 +103,34 @@ async function importMatch(ClassType, attributes) {
             }
         }
     }
+
+    //Associate the actions with the match
+    const MatchAction = Parse.Object.extend('MatchAction');
+    let matchActions = await importActions(attributes['@matchID']);
+    let relation = match.relation("actions");
+    matchActions.forEach(function (action, index, actions) {
+        let matchAction = new MatchAction();
+        matchAction.save({
+            "teamID": action['@teamID'],
+            "eventID": action['@eventID'],
+            "eventType": action['eventType'],
+            "matchTime": action['matchTime'],
+            "eventTime": action['matchTime'],
+            "normalTime": action['matchTime'],
+            "addedTime": action['matchTime']
+        }, {
+            success: function (matchAction) {
+                relation.add(matchAction);
+            }
+        });
+    });
+
     match = await match.save();
-    //await importActions(attributes['@matchID'], match.id);
     ID_MAP.set(attributes.objectId, match.id);
     return match;
 }
 
-async function importActions(matchID, newMatchID) {
-    const response = await fetch(`${api_uri}match/actions/${config.import_key}/${matchID}/json`, {
-        method: 'get',
-        headers: {'Content-Type': 'application/json'}
-    });
-    const { matchActions } = await response.json();
-    const ClassType = Parse.Object.extend('MatchAction');
-    await new Parse.Query(ClassType).each(record => record.destroy());
-    return Promise.all(matchActions.map(attrs => importAction(ClassType, attrs, newMatchID)));
-}
-
-async function importAction(ClassType, attributes, matchID) {
+async function importAction(ClassType, attributes) {
     let action = new ClassType();
     for (let key in attributes) {
         let value = attributes[key];

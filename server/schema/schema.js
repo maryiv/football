@@ -26,13 +26,15 @@ import {
 import Parse from 'parse/node';
 
 const Match = Parse.Object.extend('Match');
+const Competition = Parse.Object.extend('Competition');
 const MatchAction = Parse.Object.extend('MatchAction');
 const Team = Parse.Object.extend('Team');
+const Season = Parse.Object.extend('Season');
 const config = require('../../conf/run');
 
 var {nodeInterface, nodeField} = nodeDefinitions(
-    findObjectByGlobalId,
-    objectToGraphQLType
+  findObjectByGlobalId,
+  objectToGraphQLType
 );
 
 function findObjectByGlobalId(globalId) {
@@ -43,12 +45,16 @@ function findObjectByGlobalId(globalId) {
 
 function objectToGraphQLType(obj) {
   switch (obj.className) {
+    case 'Competition':
+      return CompetitionType;
     case 'Match':
       return MatchType;
     case 'MatchAction':
       return MatchActionType;
     case 'Team':
       return TeamType;
+    case 'Season':
+      return SeasonType;
   }
   return null;
 }
@@ -58,20 +64,17 @@ var MatchType = new GraphQLObjectType({
   description: 'Football match',
   fields: () => ({
     id: globalIdField('Match'),
-    startTime: {
-      type: GraphQLFloat,
-      description: 'Unix timestamp when the match is scheduled.',
-      resolve: (match) => match.get('startTime').getTime()
-    },
+    date: { type: GraphQLString },
+    time: { type: GraphQLString },
     competition: { type: CompetitionType },
     stage: { type: StageType },
     round: { type: RoundType },
     leg: { type: GraphQLInt },
-    liveMatch: { type: GraphQLBoolean },
-    result: { type: GraphQLBoolean },
-    previewAvailable: { type: GraphQLBoolean },
-    reportAvailable: { type: GraphQLBoolean },
-    lineupsAvailable: { type: GraphQLBoolean },
+    liveMatch: { type: BooleanType },
+    result: { type: BooleanType },
+    previewAvailable: { type: BooleanType },
+    reportAvailable: { type: BooleanType },
+    lineupsAvailable: { type: BooleanType },
     matchStatus: { type: MatchStatusType },
     attendance: { type: GraphQLString },
     referee: { type: RefereeType },
@@ -82,12 +85,28 @@ var MatchType = new GraphQLObjectType({
   interfaces: [nodeInterface]
 });
 
+var BooleanType = new GraphQLEnumType({
+  name: 'BooleanType',
+  values: {
+    No: { value: 0 },
+    Yes: { value: 1 }
+  }
+});
+
 var CompetitionType = new GraphQLObjectType({
   name: 'Competition',
   fields: () => ({
     competitionID: { type: new GraphQLNonNull(GraphQLID) },
     seasonID: { type: new GraphQLNonNull(GraphQLID) },
     text: { type: GraphQLString }
+  })
+});
+
+var SeasonType = new GraphQLObjectType({
+  name: 'Season',
+  fields: () => ({
+    id: globalIdField('Season'),
+    info: { type: GraphQLString }
   })
 });
 
@@ -141,20 +160,7 @@ var MatchTeamType = new GraphQLObjectType({
   name: 'MatchTeam',
   description: 'Info by team in match',
   fields: () => ({
-    teamID: { type: new GraphQLNonNull(GraphQLID) },
-    teamName: {
-      type: GraphQLString,
-      resolve: (matchTeam) => new Parse.Query(Team).get(matchTeam.teamID, {
-        success: function(team) {
-          return team.name;
-        },
-        error: function(object, error) {
-          return '';
-        }
-      })
-    },
-    score: { type: GraphQLInt },
-    htScore: { type: GraphQLInt }
+    venue
   })
 });
 
@@ -195,7 +201,8 @@ var AppQueryType = new GraphQLObjectType({
     schedule: {
       type: new GraphQLList(MatchType),
       description: 'Match schedule',
-      resolve: () => new Parse.Query(Match).greaterThan('startTime', new Date().getTime()).ascending('startTime').find()
+      resolve: () => new Parse.Query(Match).find()
+      //resolve: () => new Parse.Query(Match).greaterThan('startTime', new Date().getTime()).ascending('startTime').find()
     }
   })
 });

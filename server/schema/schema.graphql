@@ -1,21 +1,27 @@
+enum BooleanType {
+  No
+  Yes
+}
+
 type Competition {
-  competitionID: ID!
+  id: ID!
   seasonID: ID!
   text: String
 }
 
 type Match implements Node {
   id: ID!
-  startTime: Float
+  date: String
+  time: String
   competition: Competition
   stage: Stage
   round: Round
   leg: Int
-  liveMatch: Boolean
-  result: Boolean
-  previewAvailable: Boolean
-  reportAvailable: Boolean
-  lineupsAvailable: Boolean
+  liveMatch: BooleanType
+  result: BooleanType
+  previewAvailable: BooleanType
+  reportAvailable: BooleanType
+  lineupsAvailable: BooleanType
   matchStatus: MatchStatus
   attendance: String
   referee: Referee

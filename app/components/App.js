@@ -1,37 +1,24 @@
-/**
- * @providesModule F8App
- * @flow
- */
+import React, { Component } from 'react'
+import { AppState, StyleSheet, Text, View, StatusBar, TouchableHighlight } from 'react-native';
+import { connect } from 'react-redux';
+import HomeScreen from './HomeScreen';
 
-'use strict';
+const styles = StyleSheet.create({
+    container: {
+        flex: 1
+    }
+});
 
-var React = require('React');
-var AppState = require('AppState');
-var StyleSheet = require('StyleSheet');
-var View = require('View');
-var StatusBar = require('StatusBar');
-var { connect } = require('react-redux');
-var HomeScreen = require('./HomeScreen');
-
-var { loadMatches } = require('../constants/ActionCreators');
-
-const Props = {
-    isFetching: Boolean,
-    matches: Array
-};
-
-var App = React.createClass({
-    componentDidMount: function() {
+class App extends Component {
+    componentDidMount() {
         AppState.addEventListener('change', this.handleAppStateChange);
-        this.props.dispatch(loadMatches());
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         AppState.removeEventListener('change', this.handleAppStateChange);
-    },
+    }
 
-    render: function() {
-        
+    render() {
         return (
             <View style={styles.container}>
                 <StatusBar
@@ -43,12 +30,6 @@ var App = React.createClass({
             </View>
         );
     }
-});
+}
 
-var styles = StyleSheet.create({
-    container: {
-        flex: 1
-    }
-});
-
-module.exports = connect()(App);
+export default connect()(App);

@@ -1,24 +1,18 @@
-/**
- * @flow
- */
-'use strict';
-
 const config = require('../conf/run');
 const serverURL = config.remote_server;
 
-var Parse = require('parse/react-native');
-var React = require('React');
-var Relay = require('react-relay');
+import React, { Component } from 'react';
+import Relay from 'react-relay';
+import { Provider } from 'react-redux';
 
-var { Provider } = require('react-redux');
-var { createStore, applyMiddleware } = require('redux');
+import Parse from 'parse/react-native';
 
-import thunk from 'redux-thunk';
+import configureStore from './configureStore';
+import App from './components/App';
 
-var App = require('./components/App');
-var todoApp =  require('./reducers');
+let store = configureStore();
 
-function setup(): React.Component {
+function setup(): Component {
     console.disableYellowBox = true;
     Parse.initialize(config.app_id);
     Parse.serverURL = `${serverURL}/parse`;
@@ -30,16 +24,10 @@ function setup(): React.Component {
         })
     );
 
-    class Root extends React.Component {
-        constructor() {
-            super();
-            this.state = {
-                store: applyMiddleware(thunk)(createStore)(todoApp)
-            };
-        }
+    class Root extends Component {
         render() {
             return (
-                <Provider store={this.state.store}>
+                <Provider store={store}>
                     <App />
                 </Provider>
             );

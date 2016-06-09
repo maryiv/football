@@ -1,11 +1,35 @@
-/**
- * @flow
- */
+import { combineReducers } from 'redux';
+import * as types from '../constants/ActionTypes';
 
-'use strict';
+const initialScheduleState = {
+    isFetching: false,
+    visibilityFilter: types.VisibilityFilters.SHOW_UPCOMING,
+    matches: []
+};
 
-var { combineReducers } = require('redux');
+function schedule(state = initialScheduleState, action) {
+    switch (action.type) {
+        case types.SET_VISIBILITY_FILTER:
+            return Object.assign({}, state, {
+                visibilityFilter: action.filter
+            });
+        case types.LOAD_MATCHES_REQUEST:
+            return Object.assign({}, state, {
+                isFetching: true,
+                matches: []
+            });
+        case types.LOAD_MATCHES_SUCCESS:
+            return Object.assign({}, state, {
+                isFetching: false,
+                matches: action.matches
+            });
+        default:
+            return state;
+    }
+}
 
-module.exports = combineReducers({
-    schedule: require('./schedule')
+const rootReducer = combineReducers({
+    schedule
 });
+
+export default rootReducer

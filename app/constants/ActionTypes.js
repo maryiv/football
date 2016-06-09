@@ -1,13 +1,7 @@
-/**
- * @flow
- */
-'use strict';
-
 export const LOAD_MATCHES_REQUEST = 'LOAD_MATCHES_REQUEST';
 export const LOAD_MATCHES_SUCCESS = 'LOAD_MATCHES_SUCCESS';
 export const LOAD_MATCHES_FAILURE = 'LOAD_MATCHES_FAILURE';
 
-export const SHOW_MATCHES = 'SHOW_MATCHES';
 export const SHOW_ACTIONS = 'SHOW_ACTIONS';
 export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER';
 

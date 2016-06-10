@@ -3,25 +3,33 @@ import { StyleSheet, Text, View, ActivityIndicatorIOS } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#ffffff',
-        paddingTop: 10
+        margin: 10,
+        padding: 5,
+        backgroundColor: '#51cdda',
+        borderRadius: 3
+    },
+    title: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        alignSelf: 'center'
     },
     text: {
-        fontSize: 16,
-        color: '#55b8a8',
-        alignSelf: 'center'
+        fontSize: 12,
+        color: '#ffffff'
     }
 });
 
-class MathesScreen extends Component {
+class MatchesScreen extends Component {
     render() {
+        const { match } = this.props;
         return (
             <View style={styles.container}>
-
+                <Text style={styles.title}>Class:{ match.className }</Text>
+                <Text style={styles.text}>ID:{ match.id }</Text>
             </View>
         );
     }
 }
 
-export default MathesScreen;
+export default MatchesScreen;

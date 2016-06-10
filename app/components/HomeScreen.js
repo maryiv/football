@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import  * as HomeActions from '../actions/index';
 import LoadScreen from '../containers/Load';
 import EmptyScreen from '../containers/Empty';
-import MatchScreen from '../containers/Match';
+import MatchesScreen from '../containers/Match';
 
 const styles = StyleSheet.create({
     container: {
@@ -37,9 +37,7 @@ class HomeScreen extends Component {
     }
 
     componentDidMount() {
-        if (!this.props.matches) {
-            this.constructor.fetchData(this.props.dispatch);
-        }
+        this.constructor.fetchData(this.props.dispatch);
     }
 
     render() {
@@ -57,14 +55,11 @@ class HomeScreen extends Component {
         let result;
         if (matches.length > 0) {
             result = matches.map(match =>
-                <MatchScreen post={match} key={match.id} />
+                <MatchesScreen match={match} />
             );
         }
         return (
-            <View style={styles.container}
-                  title={`Schedule`}
-                  backgroundImage={require('../images/schedule-background.png')}
-                  selectedSectionColor="#51CDDA">
+            <View style={styles.container}>
                 {result}
             </View>
         );
@@ -78,7 +73,7 @@ HomeScreen.propTypes = {
 };
 
 function mapStateToProps(state) {
-    const { isFetching, matches } = state || {
+    const { isFetching, matches } = state.schedule || {
         isFetching: true,
         matches: []
     };

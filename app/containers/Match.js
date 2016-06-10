@@ -25,8 +25,12 @@ class MatchesScreen extends Component {
         const { match } = this.props;
         return (
             <View style={styles.container}>
-                <Text style={styles.title}>Class:{ match.className }</Text>
-                <Text style={styles.text}>ID:{ match.id }</Text>
+                <Text style={styles.title}>{ match.time } { match.date }</Text>
+                <Text style={styles.title}>{ match.competition.text }</Text>
+                <Text style={styles.text}>Live match: { match.liveMatch }</Text>
+                <Text style={styles.text}>Preview available: { match.previewAvailable }</Text>
+                <Text style={styles.text}>Report available: { match.reportAvailable }</Text>
+                <Text style={styles.text}>Match status: { match.matchStatus }</Text>
             </View>
         );
     }

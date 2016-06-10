@@ -150,6 +150,11 @@ async function main() {
     let mm = convertToday(today.getMonth()+1);
     today = today.getFullYear()+mm+dd;
 
+    /**
+     * Comment out, to get the real current date
+     */
+    today = '20160603';
+
     console.log('Import data from today');
     let matches = await importMatches(today);
     let count = matches.length;

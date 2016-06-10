@@ -1,18 +1,25 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import  * as HomeActions from '../actions/index';
+import LoadScreen from '../containers/Load';
+import EmptyScreen from '../containers/Empty';
+import MatchScreen from '../containers/Match';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#55b8a8',
-        paddingTop: 50
+        backgroundColor: '#ffffff',
+        paddingTop: 10
+    },
+    indicator: {
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     text: {
-        fontSize: 20,
-        color: '#ffffff',
+        fontSize: 16,
+        color: '#55b8a8',
         alignSelf: 'center'
     }
 });
@@ -37,23 +44,28 @@ class HomeScreen extends Component {
 
     render() {
         const { isFetching, matches } = this.props;
-        if (isFetching) {
-            return <p>Loading...</p>;
+        if (isFetching && !matches.length) {
+            return (
+                <LoadScreen />
+            );
+        }
+        if (!isFetching && !matches.length) {
+            return (
+                <EmptyScreen />
+            );
         }
         let result;
-        if (matches && matches.length > 0) {
+        if (matches.length > 0) {
             result = matches.map(match =>
-                <Post post={match} key={match.id} />
+                <MatchScreen post={match} key={match.id} />
             );
-        } else {
-            result = "Events aren't planned";
         }
         return (
             <View style={styles.container}
-                title={`Schedule`}
-                backgroundImage={require('../images/schedule-background.png')}
-                selectedSectionColor="#51CDDA">
-                <Text style={styles.text}>Matches: {result}</Text>
+                  title={`Schedule`}
+                  backgroundImage={require('../images/schedule-background.png')}
+                  selectedSectionColor="#51CDDA">
+                {result}
             </View>
         );
     }
